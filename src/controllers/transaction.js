@@ -7,7 +7,9 @@ exports.getTransactionList = async (req, res) => {
 
         const transactions = await Transaction.find(filters)
 
-        res.status(200).json(transactions)
+        res.status(200).json({
+            data: transactions,
+        })
     } catch (err) {
         res.status(500).json({ error: 'Veri çekilirken bir hata oluştu.', err })
     }
@@ -23,7 +25,9 @@ exports.getTransaction = async (req, res) => {
             return res.status(404).json({ error: 'İşlem bulunamadı.' })
         }
 
-        res.status(200).json(transaction)
+        res.status(200).json({
+            data: transaction,
+        })
     } catch (err) {
         res.status(500).json({ error: 'Veri çekilirken bir hata oluştu.' })
     }
