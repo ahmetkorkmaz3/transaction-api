@@ -38,7 +38,11 @@ const getFilters = (queryParams) => {
     }
 
     if (date) {
-        filters.created_at = getQueryForDateFilter(date)
+        const dateFilter = getQueryForDateFilter(date)
+
+        if (dateFilter) {
+            filters.created_at = dateFilter
+        }
     }
 
     return filters
@@ -85,9 +89,6 @@ function getQueryForDateFilter(value) {
             const oneYearAgo = new Date(now)
             oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
             return { $gte: startOfDay(oneYearAgo) }
-
-        default:
-            return {}
     }
 }
 
