@@ -47,35 +47,45 @@ const getFilters = (queryParams) => {
 function getQueryForDateFilter(value) {
     const now = new Date()
 
+    const startOfDay = (date) => {
+        const result = new Date(date)
+        result.setHours(0, 0, 0, 0)
+        return result
+    }
+
+    const endOfDay = (date) => {
+        const result = new Date(date)
+        result.setHours(23, 59, 59, 999)
+        return result
+    }
+
     switch (value) {
         case 'today':
-            const startOfToday = new Date(now)
-            startOfToday.setHours(0, 0, 0, 0)
-            return { createdAt: { $gte: startOfToday } }
+            return { $gte: startOfDay(now) }
+
         case 'yesterday':
-            const startOfYesterday = new Date(now)
-            startOfYesterday.setDate(startOfYesterday.getDate() - 1)
-            startOfYesterday.setHours(0, 0, 0, 0)
-
-            const endOfYesterday = new Date(now)
-            endOfYesterday.setDate(endOfYesterday.getDate() - 1)
-            endOfYesterday.setHours(23, 59, 59, 999)
-
+            const yesterday = new Date(now)
+            yesterday.setDate(yesterday.getDate() - 1)
             return {
-                createdAt: { $gte: startOfYesterday, $lte: endOfYesterday },
+                $gte: startOfDay(yesterday),
+                $lt: endOfDay(yesterday),
             }
+
         case 'last_7_days':
             const sevenDaysAgo = new Date(now)
             sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-            return { createdAt: { $gte: sevenDaysAgo } }
+            return { $gte: startOfDay(sevenDaysAgo) }
+
         case 'last_30_days':
             const thirtyDaysAgo = new Date(now)
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-            return { createdAt: { $gte: thirtyDaysAgo } }
+            return { $gte: startOfDay(thirtyDaysAgo) }
+
         case 'last_1_years':
             const oneYearAgo = new Date(now)
             oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
-            return { createdAt: { $gte: oneYearAgo } }
+            return { $gte: startOfDay(oneYearAgo) }
+
         default:
             return {}
     }
