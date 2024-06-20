@@ -20,7 +20,7 @@ const getFilters = (queryParams) => {
     }
 
     if (type) {
-        filters.type = type
+        filters.type = type.split(',')
     }
 
     if (refundable !== undefined) {
